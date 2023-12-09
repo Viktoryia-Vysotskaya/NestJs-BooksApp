@@ -35,4 +35,14 @@ export class BooksService {
       throw error;
     }
   }
+
+  public updateById(
+    id: Book['id'],
+    bookData: Omit<Book, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Book> {
+    return this.prismaService.book.update({
+      where: { id },
+      data: bookData,
+    });
+  }
 }
