@@ -40,9 +40,21 @@ export class BooksService {
     id: Book['id'],
     bookData: Omit<Book, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<Book> {
-    return this.prismaService.book.update({
+    try {
+      return this.prismaService.book.update({
+        where: { id },
+        data: bookData,
+      });
+    } catch (error) {
+      if (error.code === 'P2002')
+        throw new ConflictException('Title is already taken');
+      throw error;
+    }
+  }
+
+  public delete(id: Book['id']): Promise<Book> {
+    return this.prismaService.book.delete({
       where: { id },
-      data: bookData,
     });
   }
 }
