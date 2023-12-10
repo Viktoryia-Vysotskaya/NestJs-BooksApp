@@ -14,4 +14,17 @@ export class AuthService {
     };
     return this.usersService.create(userData, hashedPassword);
   }
+
+  public async validateUser(email: string, password: string) {
+    const user = await this.usersService.getByEmail(email);
+    if (
+      user &&
+      (await bcrypt.compare(password, user.password.hashedPassword))
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
 }
